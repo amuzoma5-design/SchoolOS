@@ -48,6 +48,7 @@ export default async function Home() {
           <a href="/fee-structures" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Fees</a>
           <a href="/invoices" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Invoices</a>
           <a href="/staff" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Staff</a>
+          <a href="/reminders" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Reminders</a>
         </nav>
 
         <div className="rounded-lg border border-line bg-white p-6">
