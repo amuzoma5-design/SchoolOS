@@ -76,11 +76,59 @@ export async function createStudent(input: {
   return { success: true };
 }
 
+export async function updateStudent(input: {
+  studentId: string;
+  name: string;
+  classId: string;
+  admissionNo?: string;
+}) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not signed in" };
+
+  if (!input.name || !input.classId) {
+    return { error: "Name and class are required" };
+  }
+
+  const { error } = await supabase
+    .from("students")
+    .update({
+      name: input.name,
+      class_id: input.classId,
+      admission_no: input.admissionNo || null,
+    })
+    .eq("id", input.studentId);
+
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
+export async function deleteStudent(studentId: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not signed in" };
+
+  const { error } = await supabase
+    .from("students")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", studentId);
+
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
 export async function getStudents() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("students")
-    .select("id, name, admission_no, classes(name), parents(name, phone)")
+    .select("id, name, admission_no, class_id, classes(name), parents(name, phone)")
+    .is("deleted_at", null)
     .order("name", { ascending: true });
 
   if (error) return { students: [], error: error.message };

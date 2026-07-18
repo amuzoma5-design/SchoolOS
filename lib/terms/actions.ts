@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
@@ -37,6 +37,51 @@ export async function createTerm(input: { name: string; startDate: string; endDa
   });
 
   if (error) return { error: error.message };
+  return { success: true };
+}
+
+export async function updateTerm(input: {
+  termId: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+}) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not signed in" };
+
+  if (!input.name || !input.startDate || !input.endDate) {
+    return { error: "All fields are required" };
+  }
+
+  const { error } = await supabase
+    .from("terms")
+    .update({ name: input.name, start_date: input.startDate, end_date: input.endDate })
+    .eq("id", input.termId);
+
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
+export async function deleteTerm(termId: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not signed in" };
+
+  const { error } = await supabase.from("terms").delete().eq("id", termId);
+
+  if (error) {
+    if (error.code === "23503") {
+      return { error: "This term has fee structures or invoices linked to it, so it can't be removed." };
+    }
+    return { error: error.message };
+  }
   return { success: true };
 }
 

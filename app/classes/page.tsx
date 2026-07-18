@@ -1,5 +1,6 @@
 ﻿import { getClasses } from "@/lib/classes/actions";
 import { ClassForm } from "@/components/bursar/class-form";
+import { ClassRow } from "@/components/bursar/class-row";
 
 export default async function ClassesPage() {
   const { classes, error } = await getClasses();
@@ -21,7 +22,7 @@ export default async function ClassesPage() {
         )}
         <ul className="mt-2 divide-y divide-line">
           {classes.map((c) => (
-            <li key={c.id} className="py-2 text-ink">{c.name}</li>
+            <ClassRow key={c.id} cls={c} />
           ))}
         </ul>
       </div>

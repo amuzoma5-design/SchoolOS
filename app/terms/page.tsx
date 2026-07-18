@@ -1,5 +1,6 @@
 ﻿import { getTerms } from "@/lib/terms/actions";
 import { TermForm } from "@/components/bursar/term-form";
+import { TermRow } from "@/components/bursar/term-row";
 
 export default async function TermsPage() {
   const { terms, error } = await getTerms();
@@ -21,9 +22,7 @@ export default async function TermsPage() {
         )}
         <ul className="mt-2 divide-y divide-line">
           {terms.map((t) => (
-            <li key={t.id} className="py-2 text-ink">
-              {t.name} <span className="text-ink/50 text-sm">({t.start_date} to {t.end_date})</span>
-            </li>
+            <TermRow key={t.id} term={t} />
           ))}
         </ul>
       </div>

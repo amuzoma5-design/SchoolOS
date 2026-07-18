@@ -78,7 +78,9 @@ export async function getInvoices() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("invoices")
-    .select("id, amount_due, amount_paid, status, due_date, payment_token, students(name)")
+    .select(
+      "id, amount_due, amount_paid, status, due_date, payment_token, students(name), payments(id, amount, source, created_at)"
+    )
     .order("due_date", { ascending: true });
 
   if (error) return { invoices: [], error: error.message };

@@ -1,6 +1,7 @@
 ﻿import { getStudents } from "@/lib/students/actions";
 import { getClasses } from "@/lib/classes/actions";
 import { StudentForm } from "@/components/bursar/student-form";
+import { EditStudentForm } from "@/components/bursar/edit-student-form";
 
 export default async function StudentsPage() {
   const { students, error } = await getStudents();
@@ -24,10 +25,15 @@ export default async function StudentsPage() {
         <ul className="mt-2 divide-y divide-line">
           {students.map((s: any) => (
             <li key={s.id} className="py-2 text-ink">
-              <span className="font-medium">{s.name}</span>
-              <span className="text-ink/50 text-sm"> - {s.classes?.name}</span>
-              <br />
-              <span className="text-ink/50 text-sm">Parent: {s.parents?.name} ({s.parents?.phone})</span>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="font-medium">{s.name}</span>
+                  <span className="text-ink/50 text-sm"> - {s.classes?.name}</span>
+                  <br />
+                  <span className="text-ink/50 text-sm">Parent: {s.parents?.name} ({s.parents?.phone})</span>
+                </div>
+                <EditStudentForm student={s} classes={classes} />
+              </div>
             </li>
           ))}
         </ul>

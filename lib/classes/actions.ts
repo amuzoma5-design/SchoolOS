@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
@@ -33,6 +33,44 @@ export async function createClass(input: { name: string }) {
   });
 
   if (error) return { error: error.message };
+  return { success: true };
+}
+
+export async function updateClass(input: { classId: string; name: string }) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not signed in" };
+
+  if (!input.name) return { error: "Class name is required" };
+
+  const { error } = await supabase
+    .from("classes")
+    .update({ name: input.name })
+    .eq("id", input.classId);
+
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
+export async function deleteClass(classId: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not signed in" };
+
+  const { error } = await supabase.from("classes").delete().eq("id", classId);
+
+  if (error) {
+    if (error.code === "23503") {
+      return { error: "This class has students or fee structures linked to it, so it can't be removed." };
+    }
+    return { error: error.message };
+  }
   return { success: true };
 }
 

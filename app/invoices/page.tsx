@@ -49,6 +49,24 @@ export default async function InvoicesPage() {
               <a href={`/pay/${inv.payment_token}`} target="_blank" className="text-sm text-trust">
                 Payment link &rarr;
               </a>
+
+              {inv.payments && inv.payments.length > 0 && (
+                <ul className="mt-1 ml-2 border-l-2 border-line pl-2">
+                  {inv.payments.map((p: any) => (
+                    <li key={p.id} className="text-sm text-ink/60">
+                      NGN {Number(p.amount).toLocaleString()} ({p.source}) -{" "}
+                      
+                       <a href={`/api/receipts/${p.id}`}
+                        target="_blank"
+                        className="text-trust"
+                      >
+                        Download receipt
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
               {inv.status !== "paid" && (
                 <div className="mt-1">
                   <LogPaymentForm invoiceId={inv.id} />
