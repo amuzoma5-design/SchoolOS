@@ -29,6 +29,9 @@ export default async function Home() {
     partial: "text-pending",
   };
 
+  const navLinkClass =
+    "flex-shrink-0 rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust";
+
   return (
     <main className="min-h-screen bg-paper">
       <div className="flex items-start justify-between border-b border-line bg-white px-6 py-4">
@@ -41,14 +44,14 @@ export default async function Home() {
       </div>
 
       <div className="p-6">
-        <nav className="mb-6 flex gap-3 text-sm">
-          <a href="/classes" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Classes</a>
-          <a href="/terms" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Terms</a>
-          <a href="/students" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Students</a>
-          <a href="/fee-structures" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Fees</a>
-          <a href="/invoices" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Invoices</a>
-          <a href="/staff" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Staff</a>
-          <a href="/reminders" className="rounded-md bg-white px-3 py-2 border border-line text-ink hover:border-trust">Reminders</a>
+        <nav className="mb-6 flex gap-3 overflow-x-auto whitespace-nowrap text-sm pb-2">
+          <a href="/classes" className={navLinkClass}>Classes</a>
+          <a href="/terms" className={navLinkClass}>Terms</a>
+          <a href="/students" className={navLinkClass}>Students</a>
+          <a href="/fee-structures" className={navLinkClass}>Fees</a>
+          <a href="/invoices" className={navLinkClass}>Invoices</a>
+          <a href="/staff" className={navLinkClass}>Staff</a>
+          <a href="/reminders" className={navLinkClass}>Reminders</a>
         </nav>
 
         <div className="rounded-lg border border-line bg-white p-6">
