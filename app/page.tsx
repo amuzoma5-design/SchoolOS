@@ -160,6 +160,7 @@ export default async function Home() {
           <a href="/staff" className={navLinkClass}>Staff</a>
           <a href="/reminders" className={navLinkClass}>Reminders</a>
           <a href="/attendance" className={navLinkClass}>Attendance</a>
+          <a href="/settings" className={navLinkClass}>Settings</a>
         </nav>
 
         <div className="rounded-lg border border-line bg-white p-6">
