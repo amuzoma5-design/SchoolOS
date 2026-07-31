@@ -1,8 +1,64 @@
 ﻿import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import { getDashboardSummary } from "@/lib/dashboard/actions";
 import { getDailyBriefing } from "@/lib/briefing/actions";
 import { SignOutButton } from "@/components/sign-out-button";
+
+function LandingPage() {
+  return (
+    <main className="min-h-screen bg-paper">
+      <div className="bg-trust px-6 py-16 text-center">
+        <p className="text-xs font-semibold tracking-widest text-white/50">SCHOOLOS</p>
+        <h1 className="mt-4 text-3xl font-bold leading-tight text-white">
+          Stop chasing fees.<br />
+          <span className="text-collected">Start seeing them.</span>
+        </h1>
+        <p className="mx-auto mt-4 max-w-md text-white/80">
+          The daily operations app for African school owners - fees, attendance, and what needs your attention today, all in one place.
+        </p>
+        <div className="mt-8 flex justify-center gap-3">
+          <a href="/signup" className="rounded-md bg-collected px-6 py-3 font-medium text-white">
+            Get started
+          </a>
+          <a href="/login" className="rounded-md border border-white/30 px-6 py-3 font-medium text-white">
+            Sign in
+          </a>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-2xl px-6 py-12">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-ink/50">What it does</h2>
+        <div className="mt-4 space-y-4">
+          <div className="rounded-lg border border-line bg-white p-4">
+            <p className="font-medium text-ink">See your collection rate, live</p>
+            <p className="mt-1 text-sm text-ink/60">No more waiting for end-of-term reports to know your cash position.</p>
+          </div>
+          <div className="rounded-lg border border-line bg-white p-4">
+            <p className="font-medium text-ink">Know exactly who owes what</p>
+            <p className="mt-1 text-sm text-ink/60">Every student, every balance, one screen.</p>
+          </div>
+          <div className="rounded-lg border border-line bg-white p-4">
+            <p className="font-medium text-ink">Log cash and transfer payments instantly</p>
+            <p className="mt-1 text-sm text-ink/60">No more separate notebook to reconcile at term's end.</p>
+          </div>
+          <div className="rounded-lg border border-line bg-white p-4">
+            <p className="font-medium text-ink">Remind parents on WhatsApp, one tap</p>
+            <p className="mt-1 text-sm text-ink/60">Pre-filled with the exact student and balance.</p>
+          </div>
+        </div>
+
+        <div className="mt-10 text-center">
+          <a href="/signup" className="inline-block rounded-md bg-trust px-6 py-3 font-medium text-white">
+            Set up your school
+          </a>
+        </div>
+      </div>
+
+      <div className="border-t border-line py-6 text-center text-xs text-ink/40">
+        Built by Venew Coop
+      </div>
+    </main>
+  );
+}
 
 export default async function Home() {
   const supabase = await createClient();
@@ -11,7 +67,7 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    return <LandingPage />;
   }
 
   const { data: staffRecord } = await supabase
