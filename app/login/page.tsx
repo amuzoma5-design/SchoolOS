@@ -3,7 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-
+async function handleGoogleSignIn() {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  }
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -66,7 +74,18 @@ export default function LoginPage() {
           </button>
         </form><a href="/forgot-password" className="mt-3 block text-center text-sm text-trust">
             Forgot password?
-          </a>
+          </a><div className="my-4 flex items-center gap-3">
+          <div className="h-px flex-1 bg-line"></div>
+          <span className="text-xs text-ink/40">OR</span>
+          <div className="h-px flex-1 bg-line"></div>
+        </div>
+
+        <button
+          onClick={handleGoogleSignIn}
+          className="w-full rounded-md border border-line px-4 py-2 text-sm font-medium text-ink hover:border-trust"
+        >
+          Continue with Google
+        </button>
           <a href="/signup" className="mt-2 block text-center text-sm text-trust">
           New school? Create an account
         </a>

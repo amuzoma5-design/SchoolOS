@@ -1,4 +1,5 @@
 ﻿import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import { getDashboardSummary } from "@/lib/dashboard/actions";
 import { getDailyBriefing } from "@/lib/briefing/actions";
 import { SignOutButton } from "@/components/sign-out-button";
@@ -70,11 +71,15 @@ export default async function Home() {
     return <LandingPage />;
   }
 
-  const { data: staffRecord } = await supabase
+ const { data: staffRecord } = await supabase
     .from("users")
     .select("role, name")
     .eq("auth_user_id", user.id)
-    .single();
+    .maybeSingle();
+
+  if (!staffRecord) {
+    redirect("/complete-setup");
+  }
 
   const { data: school } = await supabase.from("schools").select("name").single();
   const { collectionRate, totalDue, totalPaid, outstanding } = await getDashboardSummary();
