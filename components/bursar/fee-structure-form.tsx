@@ -43,10 +43,7 @@ export function FeeStructureForm({
     const result = await createFeeStructure({
       classId,
       termId,
-      lineItems: lineItems.map((item) => ({
-        label: item.label,
-        amount: parseFloat(item.amount) || 0,
-      })),
+      lineItems: lineItems.map((item) => ({ label: item.label, amount: parseFloat(item.amount) || 0 })),
     });
     setSaving(false);
     if (result.error) {
@@ -59,13 +56,13 @@ export function FeeStructureForm({
     router.refresh();
   }
 
-  const inputClass = "rounded-md border border-line px-3 py-2 text-ink";
+  const inputClass = "w-full rounded-md border border-line px-3 py-2 text-ink";
   const labelClass = "block text-sm text-ink/70";
 
   return (
     <form onSubmit={handleSubmit}>
       <label className={labelClass}>Class</label>
-      <select value={classId} onChange={(e) => setClassId(e.target.value)} className={`mt-1 block w-full ${inputClass}`}>
+      <select value={classId} onChange={(e) => setClassId(e.target.value)} className={`mt-1 ${inputClass}`}>
         <option value="">Select a class</option>
         {classes.map((c) => (
           <option key={c.id} value={c.id}>{c.name}</option>
@@ -73,7 +70,7 @@ export function FeeStructureForm({
       </select>
 
       <label className={`mt-3 ${labelClass}`}>Term</label>
-      <select value={termId} onChange={(e) => setTermId(e.target.value)} className={`mt-1 block w-full ${inputClass}`}>
+      <select value={termId} onChange={(e) => setTermId(e.target.value)} className={`mt-1 ${inputClass}`}>
         <option value="">Select a term</option>
         {terms.map((t) => (
           <option key={t.id} value={t.id}>{t.name}</option>
@@ -82,31 +79,31 @@ export function FeeStructureForm({
 
       <label className={`mt-4 ${labelClass}`}>Fee line items</label>
       {lineItems.map((item, index) => (
-        <div key={index} className="mt-2 flex gap-2">
+        <div key={index} className="mt-2 rounded-md border border-line p-2">
           <input
             type="text"
             placeholder="e.g. Tuition"
             value={item.label}
             onChange={(e) => updateLineItem(index, "label", e.target.value)}
-            className={`flex-[2] ${inputClass}`}
+            className={`${inputClass} mb-2`}
           />
-          <input
-            type="number"
-            placeholder="Amount"
-            value={item.amount}
-            onChange={(e) => updateLineItem(index, "amount", e.target.value)}
-            className={`flex-1 ${inputClass}`}
-          />
-          {lineItems.length > 1 && (
-            <button type="button" onClick={() => removeLineItem(index)} className="text-sm text-overdue">
-              Remove
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              placeholder="Amount"
+              value={item.amount}
+              onChange={(e) => updateLineItem(index, "amount", e.target.value)}
+              className={inputClass}
+            />
+            {lineItems.length > 1 && (
+              <button type="button" onClick={() => removeLineItem(index)} className="flex-shrink-0 text-sm text-overdue">
+                Remove
+              </button>
+            )}
+          </div>
         </div>
       ))}
-      <button type="button" onClick={addLineItem} className="mt-2 text-sm text-trust">
-        + Add line item
-      </button>
+      <button type="button" onClick={addLineItem} className="mt-2 text-sm text-trust">+ Add line item</button>
 
       <p className="mt-3 text-sm text-ink/70">Total: NGN {total.toLocaleString()}</p>
 
@@ -114,7 +111,7 @@ export function FeeStructureForm({
       <button
         type="submit"
         disabled={saving}
-        className="mt-3 rounded-md bg-trust px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+        className="mt-3 w-full rounded-md bg-trust px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
       >
         {saving ? "Saving..." : "Create fee structure"}
       </button>
