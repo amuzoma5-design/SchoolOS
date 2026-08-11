@@ -25,11 +25,15 @@ export function GenerateInvoicesButton({ feeStructureId }: { feeStructureId: str
   }
 
   return (
-    <span style={{ marginLeft: "1rem" }}>
-      <button onClick={handleClick} disabled={loading}>
+    <span className="flex items-center gap-2">
+      <button
+        onClick={handleClick}
+        disabled={loading}
+        className="flex-shrink-0 rounded-md bg-trust px-3 py-1.5 text-sm font-medium text-white disabled:opacity-60"
+      >
         {loading ? "Generating..." : "Generate invoices"}
       </button>
-      {message && <span style={{ marginLeft: "0.5rem" }}>{message}</span>}
+      {message && <span className="text-sm text-ink/70">{message}</span>}
     </span>
   );
 }
