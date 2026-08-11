@@ -43,6 +43,15 @@ function LandingPage() {
           </div>
         </div>
 
+        <div className="mt-8 rounded-lg border-l-4 border-trust bg-white p-4">
+          <p className="text-sm font-semibold text-trust">About cost</p>
+          <p className="mt-1 text-sm text-ink/70">
+            SchoolOS is a paid platform. It's free for your school during the pilot period so you can try it
+            properly with no risk - you'll know the price clearly before that period ends, and there's no
+            obligation to continue if it's not right for you.
+          </p>
+        </div>
+
         <div className="mt-10 text-center">
           <a href="/signup" className="inline-block rounded-md bg-trust px-6 py-3 font-medium text-white">Set up your school</a>
         </div>
