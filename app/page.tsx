@@ -14,7 +14,7 @@ function LandingPage() {
           <span className="text-collected">Start seeing them.</span>
         </h1>
         <p className="mx-auto mt-4 max-w-md text-white/80">
-          The daily operations app for African school owners - fees, attendance, and what needs your attention today, all in one place.
+          The daily operations app for African school owners - fees, attendance, admissions, and what needs your attention today, all in one place.
         </p>
         <div className="mt-8 flex justify-center gap-3">
           <a href="/signup" className="rounded-md bg-collected px-6 py-3 font-medium text-white">Get started</a>
@@ -40,6 +40,18 @@ function LandingPage() {
           <div className="rounded-lg border border-line bg-white p-4">
             <p className="font-medium text-ink">Remind parents on WhatsApp, one tap</p>
             <p className="mt-1 text-sm text-ink/60">Pre-filled with the exact student and balance.</p>
+          </div>
+          <div className="rounded-lg border border-line bg-white p-4">
+            <p className="font-medium text-ink">Track daily attendance</p>
+            <p className="mt-1 text-sm text-ink/60">Mark present, absent, or late - see who's missing today at a glance.</p>
+          </div>
+          <div className="rounded-lg border border-line bg-white p-4">
+            <p className="font-medium text-ink">Track admissions from inquiry to enrollment</p>
+            <p className="mt-1 text-sm text-ink/60">Every prospective family in one place, moving through clear stages.</p>
+          </div>
+          <div className="rounded-lg border border-line bg-white p-4">
+            <p className="font-medium text-ink">One morning view of what matters</p>
+            <p className="mt-1 text-sm text-ink/60">Overdue fees, absences, birthdays, events, new applications - all in one place, every morning.</p>
           </div>
         </div>
 
@@ -136,9 +148,7 @@ export default async function Home() {
             {briefing.birthdaysToday.length > 0 && (
               <li className="flex items-center gap-3">
                 <span className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-collected"></span>
-                <span className="text-ink">
-                  <b>{briefing.birthdaysToday.length}</b> birthday{briefing.birthdaysToday.length === 1 ? "" : "s"} today - {briefing.birthdaysToday.join(", ")}
-                </span>
+                <span className="text-ink"><b>{briefing.birthdaysToday.length}</b> birthday{briefing.birthdaysToday.length === 1 ? "" : "s"} today - {briefing.birthdaysToday.join(", ")}</span>
               </li>
             )}
             {briefing.upcomingEvents.length > 0 && (
@@ -153,9 +163,7 @@ export default async function Home() {
             {briefing.newApplications > 0 && (
               <li className="flex items-center gap-3">
                 <span className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-trust"></span>
-                <span className="text-ink">
-                  <b>{briefing.newApplications}</b> new admission application{briefing.newApplications === 1 ? "" : "s"} - <a href="/admissions" className="text-trust">view &rarr;</a>
-                </span>
+                <span className="text-ink"><b>{briefing.newApplications}</b> new admission application{briefing.newApplications === 1 ? "" : "s"} - <a href="/admissions" className="text-trust">view &rarr;</a></span>
               </li>
             )}
             {briefing.overdueCount === 0 && briefing.remindersDue === 0 && briefing.newStudentsThisWeek === 0 && briefing.absentToday === 0 && briefing.birthdaysToday.length === 0 && briefing.upcomingEvents.length === 0 && briefing.newApplications === 0 && (
