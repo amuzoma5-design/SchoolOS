@@ -10,6 +10,7 @@ export function StudentForm({ classes }: { classes: { id: string; name: string }
   const [parentName, setParentName] = useState("");
   const [parentPhone, setParentPhone] = useState("");
   const [admissionNo, setAdmissionNo] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
@@ -18,7 +19,7 @@ export function StudentForm({ classes }: { classes: { id: string; name: string }
     e.preventDefault();
     setError(null);
     setSaving(true);
-    const result = await createStudent({ name, classId, parentName, parentPhone, admissionNo });
+    const result = await createStudent({ name, classId, parentName, parentPhone, admissionNo, dateOfBirth });
     setSaving(false);
     if (result.error) {
       setError(result.error);
@@ -29,6 +30,7 @@ export function StudentForm({ classes }: { classes: { id: string; name: string }
     setParentName("");
     setParentPhone("");
     setAdmissionNo("");
+    setDateOfBirth("");
     router.refresh();
   }
 
@@ -47,6 +49,9 @@ export function StudentForm({ classes }: { classes: { id: string; name: string }
           <option key={c.id} value={c.id}>{c.name}</option>
         ))}
       </select>
+
+      <label className={labelClass}>Date of birth (optional)</label>
+      <input type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} className={inputClass} />
 
       <label className={labelClass}>Admission number (optional)</label>
       <input type="text" value={admissionNo} onChange={(e) => setAdmissionNo(e.target.value)} className={inputClass} />

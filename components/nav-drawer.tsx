@@ -13,6 +13,8 @@ const links = [
   { href: "/staff", label: "Staff" },
   { href: "/reminders", label: "Reminders" },
   { href: "/attendance", label: "Attendance" },
+  { href: "/events", label: "Events" },
+  { href: "/admissions", label: "Admissions" },
   { href: "/settings", label: "Settings" },
 ];
 

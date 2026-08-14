@@ -9,6 +9,7 @@ const createStudentSchema = z.object({
   parentName: z.string().min(1, "Parent name is required"),
   parentPhone: z.string().min(7, "Enter a valid phone number"),
   admissionNo: z.string().optional(),
+  dateOfBirth: z.string().optional(),
 });
 
 export async function createStudent(input: {
@@ -17,6 +18,7 @@ export async function createStudent(input: {
   parentName: string;
   parentPhone: string;
   admissionNo?: string;
+  dateOfBirth?: string;
 }) {
   const supabase = await createClient();
 
@@ -70,6 +72,7 @@ export async function createStudent(input: {
     class_id: parsed.data.classId,
     name: parsed.data.name,
     admission_no: parsed.data.admissionNo || null,
+    date_of_birth: parsed.data.dateOfBirth || null,
   });
 
   if (studentError) return { error: studentError.message };
@@ -127,10 +130,34 @@ export async function getStudents() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("students")
-    .select("id, name, admission_no, class_id, classes(name), parents(name, phone)")
+    .select("id, name, admission_no, class_id, date_of_birth, classes(name), parents(name, phone)")
     .is("deleted_at", null)
     .order("name", { ascending: true });
 
   if (error) return { students: [], error: error.message };
   return { students: data ?? [], error: null };
+}
+
+export async function getTodaysBirthdays() {
+  const supabase = await createClient();
+
+  const { data: students, error } = await supabase
+    .from("students")
+    .select("name, date_of_birth")
+    .is("deleted_at", null)
+    .not("date_of_birth", "is", null);
+
+  if (error || !students) return { count: 0, names: [] as string[] };
+
+  const today = new Date();
+  const todayMonth = today.getMonth() + 1;
+  const todayDay = today.getDate();
+
+  const matches = students.filter((s) => {
+    if (!s.date_of_birth) return false;
+    const dob = new Date(s.date_of_birth);
+    return dob.getMonth() + 1 === todayMonth && dob.getDate() === todayDay;
+  });
+
+  return { count: matches.length, names: matches.map((m) => m.name) };
 }

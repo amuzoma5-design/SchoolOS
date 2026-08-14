@@ -133,7 +133,32 @@ export default async function Home() {
                 <span className="text-ink"><b>{briefing.newStudentsThisWeek}</b> new student{briefing.newStudentsThisWeek === 1 ? "" : "s"} added this week</span>
               </li>
             )}
-            {briefing.overdueCount === 0 && briefing.remindersDue === 0 && briefing.newStudentsThisWeek === 0 && briefing.absentToday === 0 && (
+            {briefing.birthdaysToday.length > 0 && (
+              <li className="flex items-center gap-3">
+                <span className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-collected"></span>
+                <span className="text-ink">
+                  <b>{briefing.birthdaysToday.length}</b> birthday{briefing.birthdaysToday.length === 1 ? "" : "s"} today - {briefing.birthdaysToday.join(", ")}
+                </span>
+              </li>
+            )}
+            {briefing.upcomingEvents.length > 0 && (
+              <li className="flex items-center gap-3">
+                <span className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-trust"></span>
+                <span className="text-ink">
+                  <b>{briefing.upcomingEvents[0].title}</b> on {briefing.upcomingEvents[0].event_date}
+                  {briefing.upcomingEvents.length > 1 ? ` (+${briefing.upcomingEvents.length - 1} more)` : ""} - <a href="/events" className="text-trust">view &rarr;</a>
+                </span>
+              </li>
+            )}
+            {briefing.newApplications > 0 && (
+              <li className="flex items-center gap-3">
+                <span className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-trust"></span>
+                <span className="text-ink">
+                  <b>{briefing.newApplications}</b> new admission application{briefing.newApplications === 1 ? "" : "s"} - <a href="/admissions" className="text-trust">view &rarr;</a>
+                </span>
+              </li>
+            )}
+            {briefing.overdueCount === 0 && briefing.remindersDue === 0 && briefing.newStudentsThisWeek === 0 && briefing.absentToday === 0 && briefing.birthdaysToday.length === 0 && briefing.upcomingEvents.length === 0 && briefing.newApplications === 0 && (
               <li className="text-sm text-ink/60">Nothing urgent right now.</li>
             )}
           </ul>
