@@ -66,10 +66,14 @@ function LandingPage() {
 
         <div className="mt-10 text-center">
           <a href="/signup" className="inline-block rounded-md bg-trust px-6 py-3 font-medium text-white">Set up your school</a>
+          <p className="mt-4 text-sm text-ink/60">
+            Questions first? <a href="https://wa.me/2349044209650" target="_blank" className="text-trust font-medium">WhatsApp us</a> or email{" "}
+            <a href="mailto:venew100@gmail.com" className="text-trust font-medium">venew100@gmail.com</a>
+          </p>
         </div>
       </div>
 
-      <div className="border-t border-line py-6 text-center text-xs text-ink/40">Built by Venew Coop</div>
+      <div className="border-t border-line py-6 text-center text-xs text-ink/40">Built by VENEW</div>
     </main>
   );
 }
