@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getDashboardSummary } from "@/lib/dashboard/actions";
 import { getDailyBriefing } from "@/lib/briefing/actions";
 import { NavDrawer } from "@/components/nav-drawer";
+import { getTrialStatus } from "@/lib/billing/actions";
 
 function LandingPage() {
   return (
@@ -101,6 +102,7 @@ export default async function Home() {
   const { data: school } = await supabase.from("schools").select("name").single();
   const { collectionRate, totalDue, totalPaid, outstanding } = await getDashboardSummary();
   const briefing = await getDailyBriefing();
+  const trial = await getTrialStatus();
 
   const firstName = staffRecord?.name?.split(" ")[0] ?? "there";
   const today = new Date().toLocaleDateString("en-NG", { weekday: "long", month: "long", day: "numeric" });
@@ -120,6 +122,19 @@ export default async function Home() {
         </div>
         <NavDrawer />
       </div>
+
+      {trial?.isExpired && (
+        <div className="bg-overdue px-6 py-3 text-center text-sm font-medium text-white">
+          Your free trial has ended - new records are paused.{" "}
+          <a href="/upgrade" className="underline">Upgrade now &rarr;</a>
+        </div>
+      )}
+      {trial?.isEndingSoon && (
+        <div className="bg-pending px-6 py-3 text-center text-sm font-medium text-white">
+          {trial.daysLeft} day{trial.daysLeft === 1 ? "" : "s"} left in your free trial.{" "}
+          <a href="/upgrade" className="underline">See upgrade options &rarr;</a>
+        </div>
+      )}
 
       <div className="p-6">
         <div className="rounded-lg border border-line bg-white p-6">

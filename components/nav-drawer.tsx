@@ -16,6 +16,7 @@ const links = [
   { href: "/events", label: "Events" },
   { href: "/admissions", label: "Admissions" },
   { href: "/settings", label: "Settings" },
+  { href: "/upgrade", label: "Upgrade" },
 ];
 
 export function NavDrawer() {

@@ -29,6 +29,11 @@ export async function createTerm(input: { name: string; startDate: string; endDa
     return { error: parsed.error.issues[0].message };
   }
 
+  const { count: existingTermCount } = await supabase
+    .from("terms")
+    .select("id", { count: "exact", head: true })
+    .eq("school_id", staffRecord.school_id);
+
   const { error } = await supabase.from("terms").insert({
     school_id: staffRecord.school_id,
     name: parsed.data.name,
@@ -37,6 +42,17 @@ export async function createTerm(input: { name: string; startDate: string; endDa
   });
 
   if (error) return { error: error.message };
+
+  if (!existingTermCount || existingTermCount === 0) {
+    const gracePeriodEnd = new Date(parsed.data.endDate);
+    gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 14);
+
+    await supabase
+      .from("schools")
+      .update({ trial_ends_at: gracePeriodEnd.toISOString() })
+      .eq("id", staffRecord.school_id);
+  }
+
   return { success: true };
 }
 
