@@ -4,6 +4,7 @@ import { getDashboardSummary } from "@/lib/dashboard/actions";
 import { getDailyBriefing } from "@/lib/briefing/actions";
 import { NavDrawer } from "@/components/nav-drawer";
 import { getTrialStatus } from "@/lib/billing/actions";
+import { getAttendanceStreak } from "@/lib/attendance/streak";
 
 function LandingPage() {
   return (
@@ -103,6 +104,7 @@ export default async function Home() {
   const { collectionRate, totalDue, totalPaid, outstanding } = await getDashboardSummary();
   const briefing = await getDailyBriefing();
   const trial = await getTrialStatus();
+    const { streak } = await getAttendanceStreak();
 
   const firstName = staffRecord?.name?.split(" ")[0] ?? "there";
   const today = new Date().toLocaleDateString("en-NG", { weekday: "long", month: "long", day: "numeric" });
@@ -190,6 +192,15 @@ export default async function Home() {
             )}
           </ul>
         </div>
+
+                {streak > 0 && (
+          <div className="mt-6 flex items-center gap-3 rounded-lg border border-line bg-white p-4">
+            <span className="text-2xl">🔥</span>
+            <span className="text-sm text-ink">
+              <b>{streak}-day</b> attendance streak - keep it going!
+            </span>
+          </div>
+        )}
 
         <div className="mt-6 rounded-lg border border-line bg-white p-6">
           <p className="text-sm text-ink/60">Collection rate this term</p>

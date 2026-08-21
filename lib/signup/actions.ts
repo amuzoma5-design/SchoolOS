@@ -1,6 +1,6 @@
 ﻿"use server";
 
-import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
+import { createServiceRoleClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
 const signUpSchema = z.object({
@@ -8,6 +8,7 @@ const signUpSchema = z.object({
   ownerName: z.string().min(1, "Your name is required"),
   email: z.string().email("Enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  referralCode: z.string().optional(),
 });
 
 export async function signUpSchool(input: {
@@ -15,6 +16,7 @@ export async function signUpSchool(input: {
   ownerName: string;
   email: string;
   password: string;
+  referralCode?: string;
 }) {
   const parsed = signUpSchema.safeParse(input);
   if (!parsed.success) {
@@ -34,12 +36,23 @@ export async function signUpSchool(input: {
     return { error: authError?.message ?? "Could not create account" };
   }
 
+  let referredBySchoolId: string | null = null;
+  if (parsed.data.referralCode) {
+    const { data: referrer } = await adminClient
+      .from("schools")
+      .select("id")
+      .eq("referral_code", parsed.data.referralCode.trim())
+      .maybeSingle();
+    if (referrer) referredBySchoolId = referrer.id;
+  }
+
   const { data: school, error: schoolError } = await adminClient
     .from("schools")
     .insert({
       name: parsed.data.schoolName,
       currency: "NGN",
       data_region: "unspecified",
+      referred_by: referredBySchoolId,
     })
     .select("id")
     .single();
@@ -57,10 +70,34 @@ export async function signUpSchool(input: {
 
   if (userError) return { error: userError.message };
 
+  if (referredBySchoolId) {
+    const { data: referrerSchool } = await adminClient
+      .from("schools")
+      .select("trial_ends_at")
+      .eq("id", referredBySchoolId)
+      .single();
+
+    if (referrerSchool) {
+      const extended = new Date(referrerSchool.trial_ends_at);
+      extended.setDate(extended.getDate() + 30);
+      await adminClient.from("schools").update({ trial_ends_at: extended.toISOString() }).eq("id", referredBySchoolId);
+    }
+
+    const newExtended = new Date();
+    newExtended.setDate(newExtended.getDate() + 30);
+    const { data: currentTrial } = await adminClient.from("schools").select("trial_ends_at").eq("id", school.id).single();
+    if (currentTrial) {
+      const base = new Date(currentTrial.trial_ends_at);
+      const bonus = new Date(Math.max(base.getTime(), newExtended.getTime()));
+      await adminClient.from("schools").update({ trial_ends_at: bonus.toISOString() }).eq("id", school.id);
+    }
+  }
+
   return { success: true };
 }
 
-export async function completeGoogleSignup(schoolName: string) {
+export async function completeGoogleSignup(input: { schoolName: string; ownerName: string }) {
+  const { createClient } = await import("@/lib/supabase/server");
   const supabase = await createClient();
 
   const {
@@ -69,8 +106,11 @@ export async function completeGoogleSignup(schoolName: string) {
 
   if (!user) return { error: "Not signed in" };
 
-  if (!schoolName || schoolName.trim().length === 0) {
+  if (!input.schoolName || input.schoolName.trim().length === 0) {
     return { error: "School name is required" };
+  }
+  if (!input.ownerName || input.ownerName.trim().length === 0) {
+    return { error: "Your name is required" };
   }
 
   const { data: existing } = await supabase
@@ -87,7 +127,7 @@ export async function completeGoogleSignup(schoolName: string) {
 
   const { data: school, error: schoolError } = await adminClient
     .from("schools")
-    .insert({ name: schoolName, currency: "NGN", data_region: "unspecified" })
+    .insert({ name: input.schoolName, currency: "NGN", data_region: "unspecified" })
     .select("id")
     .single();
 
@@ -95,17 +135,11 @@ export async function completeGoogleSignup(schoolName: string) {
     return { error: schoolError?.message ?? "Could not create school" };
   }
 
-  const ownerName =
-    (user.user_metadata as any)?.full_name ||
-    (user.user_metadata as any)?.name ||
-    user.email?.split("@")[0] ||
-    "Owner";
-
   const { error: userError } = await adminClient.from("users").insert({
     school_id: school.id,
     auth_user_id: user.id,
     role: "owner",
-    name: ownerName,
+    name: input.ownerName,
   });
 
   if (userError) return { error: userError.message };

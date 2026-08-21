@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signUpSchool } from "@/lib/signup/actions";
 
 export default function SignUpPage() {
@@ -12,13 +12,15 @@ export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const referralCode = searchParams.get("ref") ?? undefined;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setSaving(true);
 
-    const result = await signUpSchool({ schoolName, ownerName, email, password });
+    const result = await signUpSchool({ schoolName, ownerName, email, password, referralCode });
 
     setSaving(false);
 
@@ -37,6 +39,9 @@ export default function SignUpPage() {
       <div className="w-full max-w-sm rounded-lg border border-line bg-white p-6">
         <p className="text-xs font-semibold tracking-wide text-ink/40">SCHOOLOS</p>
         <h1 className="mt-1 text-xl font-bold text-ink">Set up your school</h1>
+        {referralCode && (
+          <p className="mt-1 text-sm text-collected">You'll get a bonus free month for signing up via referral!</p>
+        )}
 
         <form onSubmit={handleSubmit} className="mt-4">
           <label className="text-sm text-ink/70">School name</label>
@@ -62,9 +67,7 @@ export default function SignUpPage() {
           </button>
         </form>
 
-        <a href="/login" className="mt-4 block text-center text-sm text-trust">
-          Already have an account? Sign in
-        </a>
+        <a href="/login" className="mt-4 block text-center text-sm text-trust">Already have an account? Sign in</a>
       </div>
     </main>
   );
